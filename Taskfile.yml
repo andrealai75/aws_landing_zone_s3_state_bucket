@@ -1,7 +1,17 @@
 # yaml-language-server: $schema=https://taskfile.dev/schema.json
 version: '3'
 
+vars:
+  aws_region:
+    sh: aws configure get region
+
 tasks:
+  variables:
+    desc: Display the current variables
+    cmds:
+      - 'echo "aws_region: {{.aws_region}}"'
+    silent: true
+
   validate:
     desc: Validate the Terraform configuration
     cmds:
@@ -19,7 +29,8 @@ tasks:
     deps:
       - init
     cmds:
-      - cd infrastructure && terraform plan
+      - |
+        cd infrastructure && terraform plan --var="aws_region={{.aws_region}}"
     silent: true
 
   apply:
@@ -27,7 +38,7 @@ tasks:
     deps:
       - init
     cmds:
-      - cd infrastructure && terraform apply
+      - cd infrastructure && terraform apply --var="aws_region={{.aws_region}}"
     silent: true
 
   destroy:
@@ -35,6 +46,6 @@ tasks:
     deps:
       - init
     cmds:
-      - cd infrastructure && terraform plan -destroy
-      - cd infrastructure && terraform apply -destroy
+      - cd infrastructure && terraform plan -destroy --var="aws_region={{.aws_region}}"
+      - cd infrastructure && terraform apply -destroy --var="aws_region={{.aws_region}}"
     silent: true
