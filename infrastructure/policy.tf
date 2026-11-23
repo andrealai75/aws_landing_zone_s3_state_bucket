@@ -20,21 +20,6 @@ resource "aws_s3_bucket_policy" "main" {
             "aws:SecureTransport" = "false"
           }
         }
-      },
-      {
-        Sid       = "DenyBucketAccessToOtherPrincipals"
-        Effect    = "Deny"
-        Principal = "*"
-        Action    = "s3:*"
-        Resource  = [
-          aws_s3_bucket.main.arn,
-          "${aws_s3_bucket.main.arn}/*"
-        ]
-        Condition = {
-          ArnNotEquals = {
-            "aws:PrincipalArn" = data.aws_iam_session_context.current.arn
-          }
-        }
       }
     ]
   })
